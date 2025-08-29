@@ -1,0 +1,51 @@
+/*Task #2:
+Write a program that uses a dynamic 2D array to represent a seating chart in a classroom.
+=> Rows represent benches, columns represent seats on each bench.
+=> Initialize the array with 0 (empty).
+=> Let the user fill seats (1 for occupied).
+=> Print the final seating chart in matrix form.*/
+
+#include <iostream>
+using namespace std;
+
+int main(){
+	int rows,columns,choice;
+	
+	cout<<"Enter number of rows: ";
+	cin>>row;
+	cout<<"Enter number of columns: ";
+	cin>>col;
+	
+	int **arr=new int*[row];
+	
+	for(int i=0;i<row;i++){
+		arr[i]=new int[columns];
+		  for(int j=0;j<col;j++){
+		  	arr[i][j]=0;
+		  }
+	}
+	cout<<"Enter 1 to mark the seat as occupied , enter 0 to keep it unoccupied"<<endl;
+	for(int a=0;a<row;a++){
+		for(int b=0;b<col;b++){
+			cout<<"Enter choice: ";
+			cin>>choice;
+			if(choice)
+			{
+				arr[a][b]=1;
+			}
+		}
+	}
+	
+	cout<<"PRINTED 2D ARRAY" <<endl;
+	for(int x=0;x<row;x++){
+		cout<<endl;
+		for(int y=0;y<col;y++){
+			cout<<arr[x][y]];
+		}
+	}
+	
+	for(int i=0;i<row;i++) {
+		delete[] arr[i];
+	}
+	delete[] arr;
+}
