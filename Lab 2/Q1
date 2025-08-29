@@ -1,0 +1,42 @@
+/*Task #1:
+Implement a program that dynamically allocates a 1D array of integers.
+=> The size should be given by the user.
+=> Initialize all elements with zero.
+=> Then, let the user update values at different positions.
+=> Finally, print the array and deallocate memory properly*/
+
+
+#include <iostream>
+using namespace std;
+void update(int *arr,int i,int v, int s) {
+	if((i>=0 && i<=s)){
+	arr[i]=v;
+	cout<<"value updated"<<endl;}
+	else{
+		cout<<"Please enter avlid index";
+	}
+}
+int main() {
+	int size,index,val;
+	
+	cout<<"enter array size: ";
+	cin>>size;
+	
+	int* arr=new int[size];
+	
+	for(int i=0;i<size;i++) {
+		arr[i]=0;
+	}
+	
+	cout<<"Enter element index to update"<<endl;
+	cin>>index;
+	cout<<"enter value to replace"<<endl;
+	cin>>val;
+	
+	update(arr,index,val,size);
+	
+	for(int y=0;y<size;y++) {
+		cout<<y<<" "<<arr[y]<<endl;
+	}
+	delete[] arr;
+}
