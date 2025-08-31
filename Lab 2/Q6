@@ -1,0 +1,50 @@
+/*Task #6:
+Implement a Safe Pointer class to wrap around an integer pointer.
+=> Provide methods for setValue(), getValue(), and release().
+=>
+Demonstrate the class by storing marks of 5 students and printing them safely without
+direct pointer manipulation.*/
+
+#include <iostream>
+using namespace std;
+
+class SafePointer {
+private:
+    int* ptr;
+public:
+    SafePointer():ptr(nullptr) {}
+    void setValue(int value) {
+        if (!ptr) {
+            ptr = new int;
+        }
+        *ptr = value;}
+        
+    int getValue() const {
+        if (ptr) return *ptr;
+        else {
+            cout << "Pointer not initialized!"<<endl;
+            return 0;
+        }
+}
+
+    void release() {
+        delete ptr;
+        ptr = nullptr;}
+
+    ~SafePointer() {
+        release();
+    }
+};
+
+int main() {
+    const int size = 5;
+    SafePointer students[size];
+    for (int i = 0; i < size; i++) {
+        int mark;
+        cout << "Enter marks of student "<<i+1;
+        cin >> mark;
+        students[i].setValue(mark);
+    }
+    for (int i = 0; i < size; i++) {
+        cout << "Marks of Student " << i + 1 << ": " << students[i].getValue() << endl;}
+}
