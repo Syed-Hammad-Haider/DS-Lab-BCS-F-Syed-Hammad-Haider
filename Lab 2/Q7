@@ -1,0 +1,55 @@
+/*Task #7:
+A company has multiple departments, each department has a different number of employees.
+=> Use a jagged array where each row corresponds to a department and columns store employee
+salaries.
+Calculate:
+-> The highest salary in each department.
+-> The department with the overall maximum average salary.*/
+
+#include <iostream>
+using namespace std;
+int main() {
+    int departments;
+    cout << "Enter number of departments: ";
+    cin >> departments;
+    int** salaries = new int*[departments];
+    int* empCount = new int[departments];
+
+    for (int i = 0; i < departments; i++) {
+        cout << "Enter number of employees in department " << i + 1 << ": ";
+        cin >> empCount[i];
+        salaries[i] = new int[empCount[i]];
+        cout << "Enter salaries: ";
+        for (int j = 0; j < empCount[i]; j++) {
+            cin >> salaries[i][j];
+   }
+    }
+    double maxAvg = -1;
+    int bestDept = -1;
+    cout << "\nHighest salary in each department:\n";
+    for (int i = 0; i < departments; i++) {
+        int highest = salaries[i][0];
+        int sum = 0;
+        for (int j = 0; j < empCount[i]; j++) {
+            if (salaries[i][j] > highest)
+                highest = salaries[i][j];
+            sum += salaries[i][j];
+        }
+
+        double avg = (double)sum / empCount[i];
+        cout << "Department " << i + 1 << ": " << highest << endl;
+        if (avg > maxAvg) {
+            maxAvg = avg;
+            bestDept = i+1;
+        }
+    }
+
+    cout << "Department with highest average salary: Department "
+         << bestDept << " (Avg = " << maxAvg <<")");
+
+    for (int i = 0; i < departments; i++) {
+        delete[] salaries[i];
+    }
+    delete[] salaries;
+    delete[] empCount;
+}
