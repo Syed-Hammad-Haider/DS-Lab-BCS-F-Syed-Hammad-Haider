@@ -1,0 +1,47 @@
+/*Task #4:
+Create a dynamic program that manages monthly expenses for a family.
+=> Use a 1D dynamic array to store expenses for n months.
+=> Add a feature to resize the array if the user wants to track more months later.
+=> Compute and display the total and average expenses.*/
+
+#include <iostream>
+using namespace std;
+int *resize(int *array,int oldSize,int newSize){
+    if(oldSize==newSize){
+        return array;
+    }
+    int *newArr=new int[newSize];
+    int range=(oldSize<newSize)?oldSize:newSize;
+    for(int i=0;i<range;i++){
+        newArr[i]=array[i];
+    }
+    if(range==oldSize){
+        for(int i=oldSize;i<newSize;i++){
+            cout<<"Enter expense for the added month(month "<<i+1<<"): ";
+            cin>>newArr[i];
+        }
+    }
+    delete[] array;
+    return newArr;
+}
+int main(){
+    int n;
+    cout<<"Enter number of months: ";
+    cin>>n;
+    int *arr=new int[n];
+    for(int i=0;i<n;i++){
+        cout<<"Enter expense for month "<<i+1<<": ";
+        cin>>arr[i];
+    }
+    int size;
+    cout<<"Enter a new size if you want to resize the array, else enter the old size: ";
+    cin>>size;
+    arr=resize(arr,n,size);
+    
+    int sum=0;
+    for(int i=0;i<n;i++){
+        sum+=arr[i];
+    }
+    cout<<"Total sum: "<<sum<<endl;
+    cout<<"Average monthly expense: "<<sum/n<<endl;
+}
