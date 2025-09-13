@@ -1,0 +1,37 @@
+ /*Task 4: Josephus Problem using Circular Linked List
+ Use a circular linked list to solve the Josephus problem.*/
+
+#include <iostream>
+using namespace std;
+
+class Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+int josephus(int n, int k) {
+    Node* head = new Node(1);
+    Node* prev = head;
+    for (int i = 2; i <= n; i++) {
+        prev->next = new Node(i);
+        prev = prev->next;
+}
+    prev->next = head; 
+    Node* ptr = head, *prv = prev;
+    while (ptr->next != ptr) {
+        for (int count = 1; count < k; count++) {
+            prv = ptr;
+            ptr = ptr->next;}
+        prv->next = ptr->next;
+        delete ptr;
+        ptr = prv->next;
+    }
+    int surv = ptr->data;
+    delete ptr;
+    return surv;}
+
+int main() {
+    int N = 7, K = 3;
+    cout << "Survivor: " << josephus(N, K) << endl;
+}
