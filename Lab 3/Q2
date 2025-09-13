@@ -1,0 +1,39 @@
+ /*Task 2: Merge Two Sorted Singly Linked Lists
+ Implement a function to merge two sorted singly linked lists into one sorted list.
+ Bonus: Solve without creating new nodes (rearrange pointers).*/
+
+#include <iostream>
+using namespace std;
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+Node* mergeSorted(Node* l1, Node* l2) {
+    if (!l1) return l2;
+    if (!l2) return l1;
+    if (l1->data < l2->data) {
+        l1->next = mergeSorted(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = mergeSorted(l1, l2->next);
+        return l2;
+}
+}
+void printList(Node* head) {
+    while (head) {
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;}
+int main() {
+    Node* a = new Node(1);
+    a->next = new Node(3);
+    a->next->next = new Node(5);
+    Node* b = new Node(2);
+    b->next = new Node(4);
+    b->next->next = new Node(6);
+    Node* merged = mergeSorted(a, b);
+    printList(merged);
+}
