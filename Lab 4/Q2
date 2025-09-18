@@ -1,0 +1,55 @@
+/* 2. Write a program to implement the Bubble Sort algorithm. The program should take
+an array of integers as input from the user, sort the array using bubble sort, and then
+display both the unsorted and sorted arrays. */
+
+#include <iostream>
+using namespace std;
+
+void displayList(int numbers[], int length);
+void sortBubble(int numbers[], int length);
+
+int main(){
+    int count;
+    while(1){
+        cout << "Enter the size of the array: ";
+        cin >> count;
+
+        if(count > 0) break;
+        cout << "Invalid size!" << endl;
+    }
+
+    int *numbers = new int[count];
+    cout << "\n------------- Enter the elements of the array below -------------\n";
+    for(int k = 0; k < count; k++)
+        cin >> numbers[k];
+    cout << "\n------------- Printing the original array -------------\n";
+    displayList(numbers, count);
+
+    sortBubble(numbers, count);
+
+    cout << "\n------------- Printing the sorted array -------------\n";
+    displayList(numbers, count);
+    delete[] numbers;
+    return 0;}
+
+void displayList(int numbers[], int length){
+    for(int k = 0; k < length; k++)
+        cout << numbers[k] << " ";
+    cout << endl;
+}
+
+void sortBubble(int numbers[], int length){
+    for(int m = 0; m < length - 1; m++){
+        bool swapped = false;
+        
+        for(int n = 0; n < length - m - 1; n++){
+            if(numbers[n] > numbers[n + 1]){
+                int temp = numbers[n];
+                numbers[n] = numbers[n + 1];
+                numbers[n + 1] = temp;
+                swapped = true;    }
+        }
+
+        if(!swapped) return;
+    }
+}
