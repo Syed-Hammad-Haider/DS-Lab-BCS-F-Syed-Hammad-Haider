@@ -1,0 +1,55 @@
+/* 3. Implement the Selection Sort algorithm. The program should take an array of integers from
+the user, find the smallest element, and exchange it with the element at the first position.
+This process should continue until the array is completely sorted. Display the sorted array
+to the user. */
+
+#include <iostream>
+using namespace std;
+
+void showArray(int values[], int length);
+void sortSelection(int values[], int length);
+
+int main(){
+    int count;
+    while(1){
+        cout << "Enter the size of the array: ";
+        cin >> count;
+
+        if(count > 0) break;
+        cout << "Invalid size!" << endl; }
+
+    int *values = new int[count];
+    cout << "\n------------- Enter the elements of the array below -------------\n";
+    for(int k = 0; k < count; k++)
+        cin >> values[k];
+
+    cout << "\n------------- Printing the original array -------------\n";
+    showArray(values, count);
+
+    sortSelection(values, count);
+
+    cout << "\n------------- Printing the sorted array -------------\n";
+    showArray(values, count);
+
+    delete[] values;
+    return 0;}
+
+void showArray(int values[], int length){
+    for(int k = 0; k < length; k++)
+        cout << values[k] << " ";
+    cout << endl;
+}
+void sortSelection(int values[], int length){
+    for(int m = 0; m < length - 1; m++){
+        int minIndex = m;
+        for(int n = m + 1; n < length; n++){
+            if(values[n] < values[minIndex])
+                minIndex = n;
+        }
+
+        if(minIndex != m){
+            int temp = values[m];
+            values[m] = values[minIndex];
+            values[minIndex] = temp; 
+        } }
+}
