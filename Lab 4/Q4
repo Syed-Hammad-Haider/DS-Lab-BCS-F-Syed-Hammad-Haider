@@ -1,0 +1,76 @@
+/* 4. Use Insertion Sort to sort an array of integers provided by the user. Then, implement the
+Binary Search algorithm to find a target value within the newly sorted array. The program
+should display the sorted array and the index of the found element or a message if it's not
+present. */
+
+#include <iostream>
+using namespace std;
+void showList(int nums[], int length);
+void sortInsertion(int nums[], int length);
+int searchBinary(int nums[], int length, int query);
+
+int main(){
+    int count;
+    while(1){
+        cout << "Enter the size of the array: ";
+        cin >> count;
+
+        if(count > 0) break;
+        cout << "Invalid size!" << endl;
+    }
+    int *nums = new int[count];
+    cout << "\n------------- Enter the elements of the array below -------------\n";
+    for(int k = 0; k < count; k++)
+        cin >> nums[k];
+
+    cout << "\n------------- Printing the original array -------------\n";
+    showList(nums, count);
+
+    sortInsertion(nums, count);
+
+    int target;
+    cout << "\nEnter the target element to be searched: ";
+    cin >> target;
+
+    int pos = searchBinary(nums, count, target);
+    if(pos != -1)
+        cout << "\nThe target element " << target << " has been found at index " << pos << " of the sorted array." << endl;
+    else
+        cout << "\nThe target element " << target << " is not present in the array!" << endl;
+    cout << "\n------------- Printing the sorted array -------------\n";
+    showList(nums, count);
+
+    delete[] nums;
+    return 0;
+}
+
+void showList(int nums[], int length){
+    for(int k = 0; k < length; k++)
+        cout << nums[k] << " ";
+    cout << endl;
+}
+
+void sortInsertion(int nums[], int length){
+    for(int m = 1; m < length; m++){
+        int current = nums[m];
+        int j = m - 1;
+        while(j >= 0 && nums[j] > current){
+            nums[j + 1] = nums[j];
+            j--;
+        }
+        nums[j + 1] = current;
+    }}
+
+int searchBinary(int nums[], int length, int query){
+    int low = 0, high = length - 1;
+    while(low <= high){
+        int mid = low + (high - low) / 2;
+
+        if(nums[mid] == query)
+            return mid;
+        else if(nums[mid] > query) 
+            high = mid - 1;
+        else
+            low = mid + 1;
+    }
+    return -1;}
