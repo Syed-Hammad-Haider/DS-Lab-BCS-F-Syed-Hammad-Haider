@@ -1,0 +1,75 @@
+/* 5. Implement the Interpolation Search algorithm. The program should take a sorted array
+with uniformly distributed values and a target value from the user. The algorithm should
+estimate the position of the target and check if the estimated position holds the correct
+value. If the element is found, print its index; otherwise, indicate that it's not present. */
+
+#include <iostream>
+using namespace std;
+void showArray(int nums[], int length);
+void sortInsert(int nums[], int length);
+int searchInterpolation(int nums[], int length, int query);
+
+int main(){
+    int count;
+    while(1){
+        cout << "Enter the size of the array: ";
+        cin >> count;
+
+        if(count > 0) break;
+        cout << "Invalid size!" << endl;
+    }
+
+    int *nums = new int[count];
+    cout << "\n------------- Enter the elements of the array below -------------\n";
+    for(int k = 0; k < count; k++)
+        cin >> nums[k];
+
+    // sorting the array in case the user provides unsorted input
+    sortInsert(nums, count);
+
+    int query;
+    cout << "\nEnter the target element to be searched: ";
+    cin >> query;
+
+    int pos = searchInterpolation(nums, count, query);
+    if(pos != -1)
+        cout << "\nThe target element " << query << " has been found at index " << pos << " of the sorted array." << endl;
+    else
+        cout << "\nThe target element " << query << " is not present in the array!" << endl;
+    cout << "\n------------- Printing the sorted array -------------\n";
+    showArray(nums, count);
+    delete[] nums;
+    return 0;
+}
+void showArray(int nums[], int length){
+    for(int k = 0; k < length; k++)
+        cout << nums[k] << " ";
+    cout << endl;
+}
+void sortInsert(int nums[], int length){
+    for(int m = 1; m < length; m++){
+        int current = nums[m];
+        int j = m - 1;
+        while(j >= 0 && nums[j] > current){
+            nums[j + 1] = nums[j];
+            j--;
+        }
+        nums[j + 1] = current;
+    }
+}
+int searchInterpolation(int nums[], int length, int query){
+    int low = 0, high = length - 1;
+    while(low <= high && query >= nums[low] && query <= nums[high]){
+        if(low == high || nums[low] == nums[high]){
+            if(nums[low] == query)
+                return low;
+            return -1;
+        }
+        int pos = low + ((double)(high - low) / (nums[high] - nums[low])) * (query - nums[low]);
+        if(nums[pos] == query)
+            return pos;
+        else if(nums[pos] > query)
+            high = pos - 1;
+        else
+            low = pos + 1;}
+    return -1;}
