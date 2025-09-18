@@ -1,0 +1,44 @@
+/* 1. Implement a linear search algorithm to find a specific integer in an array. The program
+should take an array of integers and a target value as input from the user. Print the index of
+the target value if it's found or a message indicating that the element is not in the array. */
+
+#include <iostream>
+using namespace std;
+
+int searchLinear(int *data, int length, int element);
+
+int main(){
+    int count;
+    while(1){
+        cout << "Enter the size of the array: ";
+        cin >> count;
+
+        if(count > 0) break;
+        cout << "Invalid size!" << endl;}
+
+    int *data = new int[count];
+    cout << "\n------------- Enter the elements of the array below -------------\n";
+    for(int j = 0; j < count; j++)
+        cin >> data[j];
+
+    int query;
+    cout << "\nEnter the target element to be searched: ";
+    cin >> query;
+
+    int position = searchLinear(data, count, query);
+    if(position != -1)
+        cout << "\nThe target element " << query << " has been found at index " << position << endl;
+    else
+        cout << "\nThe target element " << query << " is not present in the array!" << endl;
+
+    delete[] data;
+    return 0;
+}
+
+int searchLinear(int *data, int length, int element){
+    for(int j = 0; j < length; j++){
+        if(data[j] == element) return j;
+    }
+
+    return -1;}
+}
