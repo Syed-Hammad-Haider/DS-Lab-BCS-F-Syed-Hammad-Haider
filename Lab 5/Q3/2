@@ -1,0 +1,18 @@
+#include <iostream>
+using namespace std;
+
+int sumNonTail(int n) {
+    if (n == 0) {
+        return 0;
+    }
+    return n + sumNonTail(n - 1);
+}
+
+int main() {
+    int number;
+    cout << "Enter a number: ";
+    cin >> number;
+
+    int result = sumNonTail(number);
+    cout << "The sum of numbers from 1 to " << number << " using non-tail recursion is: " << result << endl;
+}
