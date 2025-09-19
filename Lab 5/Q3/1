@@ -1,0 +1,18 @@
+#include <iostream>
+using namespace std;
+
+int sumTail(int n, int total) {
+    if (n == 0) {
+        return total;
+    }
+    return sumTail(n - 1, total + n);
+}
+
+int main() {
+    int number;
+    cout << "Enter a number: ";
+    cin >> number;
+
+    int result = sumTail(number, 0);
+    cout << "The sum of numbers from 1 to " << number << " using tail recursion is: " << result << endl;
+}
