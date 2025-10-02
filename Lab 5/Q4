@@ -1,0 +1,41 @@
+/* Task 4:
+Write a C++ program that implements the Ackermann function, which is a classic example of
+nested recursion. The function ackermann(int m, int n) is defined as:
+● If m=0, return n+1.
+● If m>0 and n=0, return ackermann(m-1, 1).
+● If m>0 and n>0, return ackermann(m-1, ackermann(m, n-1)).
+This task requires you to trace the execution and understand how one recursive call is a
+parameter to another. */
+
+#include <iostream>
+using namespace std;
+
+int ackFunc(int mVal, int nVal) {
+    if(mVal == 0) return nVal + 1;
+
+    if(mVal > 0 && nVal == 0) return ackFunc(mVal - 1, 1);
+    return ackFunc(mVal - 1, ackFunc(mVal, nVal - 1)); // mVal > 0 and nVal > 0
+}
+
+int main() {
+    int mInput, nInput;
+    do {
+        cout << "Enter m: ";
+        cin >> mInput;
+
+        if(mInput >= 0) break;
+        cout << "Please enter a non-negative integer!" << endl;
+    } while(mInput < 0);
+
+    cout << endl;
+    do {
+        cout << "Enter n: ";
+        cin >> nInput;
+
+        if(nInput >= 0) break;
+        cout << "Please enter a non-negative integer!" << endl;
+    } while(nInput < 0);
+
+    cout << "Ackermann (" << mInput << "," << nInput << ") = " << ackFunc(mInput, nInput) << endl;
+    return 0;
+}
