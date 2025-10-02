@@ -1,0 +1,79 @@
+/* Task 6: Modify the provided "Rat in a Maze" code to handle a more complex version of the problem.
+The rat should now be able to move in four directions (up, down, left, and right) instead of just
+two. Your updated code should still use backtracking to find a valid path from the source (0,0) to
+the destination (N-1, N-1) while avoiding dead ends. */
+
+#include <iostream>
+using namespace std;
+
+#define SIZE 5   // size of the maze
+
+// print the path matrix
+void showPath(int path[SIZE][SIZE]) {
+    for(int i = 0; i < SIZE; i++) {
+        for(int j = 0; j < SIZE; j++)
+            cout << path[i][j] << " ";
+        cout << endl;
+    }
+}
+
+// check if position is valid
+bool canMove(int maze[SIZE][SIZE], int r, int c, int path[SIZE][SIZE]) {
+    return (r >= 0 && r < SIZE && c >= 0 && c < SIZE && maze[r][c] == 1 && path[r][c] == 0);
+}
+
+// recursive backtracking search
+bool findPathUtil(int maze[SIZE][SIZE], int r, int c, int path[SIZE][SIZE]) {
+    // reached destination
+    if(r == SIZE - 1 && c == SIZE - 1) {
+        path[r][c] = 1;
+        return true;
+    }
+
+    if(canMove(maze, r, c, path)) {
+        path[r][c] = 1; // mark current spot
+
+        // Down
+        if(findPathUtil(maze, r + 1, c, path)) return true;
+
+        // Right
+        if(findPathUtil(maze, r, c + 1, path)) return true;
+
+        // Up
+        if(findPathUtil(maze, r - 1, c, path)) return true;
+
+        // Left
+        if(findPathUtil(maze, r, c - 1, path)) return true;
+
+        // Backtrack
+        path[r][c] = 0;
+        return false;
+    }
+
+    return false;
+}
+
+void solveMaze(int maze[SIZE][SIZE]) {
+    int path[SIZE][SIZE] = {0};
+
+    if(!findPathUtil(maze, 0, 0, path)) {
+        cout << "No path exists\n";
+        return;
+    }
+
+    cout << "Valid path found (4 directions):\n";
+    showPath(path);
+}
+
+int main() {
+    int maze[SIZE][SIZE] = {
+        {1, 0, 0, 0, 0},
+        {1, 1, 0, 1, 0},
+        {0, 1, 0, 1, 0},
+        {1, 1, 1, 1, 0},
+        {0, 0, 0, 1, 1}
+    };
+
+    solveMaze(maze);
+    return 0;
+}
