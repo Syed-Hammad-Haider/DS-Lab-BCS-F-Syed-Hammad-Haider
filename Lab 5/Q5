@@ -1,0 +1,90 @@
+/* Task 5: Implement a Sudoku solver using the backtracking technique. The program should take a
+partially filled 9x9 Sudoku grid and fill the empty cells (represented by 0) to solve the puzzle.
+Your algorithm should:
+1. Find an empty cell.
+2. Try placing a number from 1 to 9 in the empty cell.
+3. Check if the number is valid in the current row, column, and 3x3 subgrid.
+4. If valid, recursively call the function to solve the rest of the puzzle.
+5. If the recursive call doesn't lead to a solution,
+backtrack by resetting the cell to 0 and trying the next number. */
+
+#include <iostream>
+using namespace std;
+
+#define SIZE 9
+
+void displayBoard(int board[SIZE][SIZE]) {
+    for(int r = 0; r < SIZE; r++) {
+        for(int c = 0; c < SIZE; c++) {
+            cout << board[r][c] << " ";
+        }
+        cout << endl;
+    }
+}
+
+bool isValid(int board[SIZE][SIZE], int r, int c, int val) {
+    for(int k = 0; k < SIZE; k++) {
+        if(board[r][k] == val)
+            return false;
+    }
+
+    for(int k = 0; k < SIZE; k++) {
+        if(board[k][c] == val)
+            return false;
+    }
+
+    int startR = r - r % 3;
+    int startC = c - c % 3;
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            if(board[startR + i][startC + j] == val) return false;
+        }
+    }
+
+    return true;
+}
+
+bool findBlank(int board[SIZE][SIZE], int &r, int &c) {
+    for(r = 0; r < SIZE; r++) {
+        for(c = 0; c < SIZE; c++) {
+            if(board[r][c] == 0)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool solveBoard(int board[SIZE][SIZE]) {
+    int r, c;
+
+    if(!findBlank(board, r, c)) return true;
+
+    for(int val = 1; val <= 9; val++) {
+        if(isValid(board, r, c, val)) {
+            board[r][c] = val;
+
+            if(solveBoard(board)) return true;
+
+            // backtrack
+            board[r][c] = 0;
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    int board[SIZE][SIZE] = {
+        {5, 3, 0, 0, 7, 0, 0, 0, 0},
+        {6, 0, 0, 1, 9, 5, 0, 0, 0},
+        {0, 9, 8, 0, 0, 0, 0, 6, 0},
+        {8, 0, 0, 0, 6, 0, 0, 0, 3},
+        {4, 0, 0, 8, 0, 3, 0, 0, 1},
+        {7, 0, 0, 0, 2, 0, 0, 0, 6},
+        {0, 6, 0, 0, 0, 0, 2, 8, 0},
+        {0, 0, 0, 4, 1, 9, 0, 0, 5},
+        {0, 0, 0, 0, 8, 0, 0, 7, 9}
+    };
+
+    if(solveBoard(board))
+        displayBoa
