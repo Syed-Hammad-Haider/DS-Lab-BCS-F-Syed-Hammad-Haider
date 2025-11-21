@@ -1,0 +1,86 @@
+#include <iostream>
+using namespace std;
+
+int getParentPos(int currPos)
+{
+    return (currPos - 1) / 2;
+}
+
+int getLeftPos(int currPos)
+{
+    return 2 * currPos + 1;
+}
+
+int getRightPos(int currPos)
+{
+    return 2 * currPos + 2;
+}
+
+void heapifyDownward(int dataHeap[], int totalSize, int startPos)
+{
+    int maxPos = startPos;
+    int leftPos = getLeftPos(startPos);
+    int rightPos = getRightPos(startPos);
+
+    if (leftPos < totalSize && dataHeap[leftPos] > dataHeap[maxPos])
+        maxPos = leftPos;
+
+    if (rightPos < totalSize && dataHeap[rightPos] > dataHeap[maxPos])
+        maxPos = rightPos;
+
+    if (maxPos != startPos)
+    {
+        int tempVar = dataHeap[startPos];
+        dataHeap[startPos] = dataHeap[maxPos];
+        dataHeap[maxPos] = tempVar;
+
+        heapifyDownward(dataHeap, totalSize, maxPos);
+    }
+}
+
+void buildMaxHeap(int dataHeap[], int totalSize)
+{
+    for (int pos = (totalSize / 2) - 1; pos >= 0; pos--)
+    {
+        heapifyDownward(dataHeap, totalSize, pos);
+    }
+}
+
+int getKthLargest(int dataHeap[], int totalSize, int kthPos)
+{
+    buildMaxHeap(dataHeap, totalSize);
+
+    for (int pos = totalSize - 1; pos >= totalSize - kthPos + 1; pos--)
+    {
+        int tempVar = dataHeap[0];
+        dataHeap[0] = dataHeap[pos];
+        dataHeap[pos] = tempVar;
+
+        heapifyDownward(dataHeap, pos, 0);
+    }
+
+    return dataHeap[0];
+}
+
+int main()
+{
+    int elementCount, kthValue;
+
+    cout << "Enter the number of elements: ";
+    cin >> elementCount;
+
+    int numberList[100];
+    cout << "Enter " << elementCount << " integers below:" << endl;
+
+    for (int pos = 0; pos < elementCount; pos++)
+    {
+        cin >> numberList[pos];
+    }
+
+    cout << "Enter the kth value: ";
+    cin >> kthValue;
+
+    cout << "kth largest element is: " << getKthLargest(numberList, elementCount, kthValue) << endl;
+
+    return 0;
+}
