@@ -1,0 +1,67 @@
+#include <iostream>
+using namespace std;
+
+int fetchLeftNode(int currIdx)
+{
+    return 2 * currIdx + 1;
+}
+
+int fetchRightNode(int currIdx)
+{
+    return 2 * currIdx + 2;
+}
+
+void applyMaxHeapify(int dataHeap[], int heapLength, int nodeIdx)
+{
+    int maxIdx = nodeIdx;
+    int leftNode = fetchLeftNode(nodeIdx);
+    int rightNode = fetchRightNode(nodeIdx);
+
+    if (leftNode < heapLength && dataHeap[leftNode] > dataHeap[maxIdx])
+        maxIdx = leftNode;
+
+    if (rightNode < heapLength && dataHeap[rightNode] > dataHeap[maxIdx])
+        maxIdx = rightNode;
+
+    if (maxIdx != nodeIdx)
+    {
+        int tempVal = dataHeap[nodeIdx];
+        dataHeap[nodeIdx] = dataHeap[maxIdx];
+        dataHeap[maxIdx] = tempVal;
+
+        applyMaxHeapify(dataHeap, heapLength, maxIdx);
+    }
+}
+
+void constructMaxHeap(int dataHeap[], int heapLength)
+{
+    for (int idx = (heapLength / 2) - 1; idx >= 0; idx--)
+    {
+        applyMaxHeapify(dataHeap, heapLength, idx);
+    }
+}
+
+int main()
+{
+    int totalElements;
+    int numberHeap[100];
+
+    cout << "Enter the number of elements: ";
+    cin >> totalElements;
+
+    cout << "Enter the heap elements below:" << endl;
+    for (int idx = 0; idx < totalElements; idx++)
+    {
+        cin >> numberHeap[idx];
+    }
+
+    constructMaxHeap(numberHeap, totalElements);
+
+    cout << "Converted Max Heap: ";
+    for (int idx = 0; idx < totalElements; idx++)
+    {
+        cout << numberHeap[idx] << " ";
+    }
+
+    return 0;
+}
