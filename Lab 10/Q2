@@ -1,0 +1,94 @@
+#include <iostream>
+using namespace std;
+
+int getParentPos(int currentPos)
+{
+    return (currentPos - 1) / 2;
+}
+
+int getLeftChildPos(int currentPos)
+{
+    return 2 * currentPos + 1;
+}
+
+int getRightChildPos(int currentPos)
+{
+    return 2 * currentPos + 2;
+}
+
+bool verifyMaxHeap(int inputArray[], int totalSize)
+{
+    for (int idx = 0; idx <= (totalSize / 2) - 1; idx++)
+    {
+        int leftPos = getLeftChildPos(idx);
+        int rightPos = getRightChildPos(idx);
+
+        if (leftPos < totalSize && inputArray[idx] < inputArray[leftPos])
+            return false;
+
+        if (rightPos < totalSize && inputArray[idx] < inputArray[rightPos])
+            return false;
+    }
+    return true;
+}
+
+void adjustHeap(int inputArray[], int heapSize, int rootPos)
+{
+    int maxPos = rootPos;
+    int leftPos = getLeftChildPos(rootPos);
+    int rightPos = getRightChildPos(rootPos);
+
+    if (leftPos < heapSize && inputArray[leftPos] > inputArray[maxPos])
+        maxPos = leftPos;
+
+    if (rightPos < heapSize && inputArray[rightPos] > inputArray[maxPos])
+        maxPos = rightPos;
+
+    if (maxPos != rootPos)
+    {
+        swap(inputArray[rootPos], inputArray[maxPos]);
+        adjustHeap(inputArray, heapSize, maxPos);
+    }
+}
+
+void generateMaxHeap(int inputArray[], int totalSize)
+{
+    for (int idx = (totalSize / 2) - 1; idx >= 0; idx--)
+        adjustHeap(inputArray, totalSize, idx);
+}
+
+void performHeapSort(int inputArray[], int totalSize)
+{
+    generateMaxHeap(inputArray, totalSize);
+
+    for (int pos = totalSize - 1; pos > 0; pos--)
+    {
+        swap(inputArray[0], inputArray[pos]);
+        adjustHeap(inputArray, pos, 0);
+    }
+}
+
+void printArray(int outputArray[], int totalSize)
+{
+    for (int idx = 0; idx < totalSize; idx++)
+        cout << outputArray[idx] << " ";
+    cout << endl;
+}
+
+int main()
+{
+    int numArray[7] = {40, 25, 35, 10, 20, 30, 15};
+    int arrSize = 7;
+
+    cout << "Is it a Max Heap? " << (verifyMaxHeap(numArray, arrSize) ? "Yes" : "No") << endl;
+
+    cout << "\n---------------- Displaying Original Array ----------------\n";
+    printArray(numArray, arrSize);
+
+    performHeapSort(numArray, arrSize);
+
+    cout << "\n---------------- Displaying Array after Heap Sort in Ascending Order ----------------\n";
+    printArray(numArray, arrSize);
+
+    return 0;
+}
