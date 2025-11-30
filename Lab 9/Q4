@@ -1,0 +1,156 @@
+#include <iostream>
+using namespace std;
+
+struct NodeAVL
+{
+    int data;
+    NodeAVL *lptr;
+    NodeAVL *rptr;
+    int ht;
+
+    NodeAVL(int x)
+    {
+        data = x;
+        lptr = rptr = nullptr;
+        ht = 1;
+    }
+};
+
+int heightNode(NodeAVL *p)
+{
+    return (p ? p->ht : 0);
+}
+
+void updateNode(NodeAVL *p)
+{
+    int LH = heightNode(p->lptr);
+    int RH = heightNode(p->rptr);
+    p->ht = 1 + (LH > RH ? LH : RH);
+}
+
+int balanceNode(NodeAVL *p)
+{
+    return heightNode(p->lptr) - heightNode(p->rptr);
+}
+
+NodeAVL *rightRot(NodeAVL *A)
+{
+    NodeAVL *B = A->lptr;
+    NodeAVL *T = B->rptr;
+
+    B->rptr = A;
+    A->lptr = T;
+
+    updateNode(A);
+    updateNode(B);
+
+    return B;
+}
+
+NodeAVL *leftRot(NodeAVL *A)
+{
+    NodeAVL *B = A->rptr;
+    NodeAVL *T = B->lptr;
+
+    B->lptr = A;
+    A->rptr = T;
+
+    updateNode(A);
+    updateNode(B);
+
+    return B;
+}
+
+NodeAVL *addNode(NodeAVL *root, int val)
+{
+    if (!root)
+        return new NodeAVL(val);
+
+    if (val < root->data)
+        root->lptr = addNode(root->lptr, val);
+    else if (val > root->data)
+        root->rptr = addNode(root->rptr, val);
+    else
+        return root;
+
+    updateNode(root);
+
+    int bf = balanceNode(root);
+
+    if (bf > 1 && val < root->lptr->data)
+        return rightRot(root);
+
+    if (bf < -1 && val > root->rptr->data)
+        return leftRot(root);
+
+    if (bf > 1 && val > root->lptr->data)
+    {
+        root->lptr = leftRot(root->lptr);
+        return rightRot(root);
+    }
+
+    if (bf < -1 && val < root->rptr->data)
+    {
+        root->rptr = rightRot(root->rptr);
+        return leftRot(root);
+    }
+
+    return root;
+}
+
+void kthSmall(NodeAVL *root, int &k, int &result)
+{
+    if (!root)
+        return;
+
+    kthSmall(root->lptr, k, result);
+
+    if (--k == 0)
+    {
+        result = root->data;
+        return;
+    }
+
+    kthSmall(root->rptr, k, result);
+}
+
+void kthLarge(NodeAVL *root, int &k, int &result)
+{
+    if (!root)
+        return;
+
+    kthLarge(root->rptr, k, result);
+
+    if (--k == 0)
+    {
+        result = root->data;
+        return;
+    }
+
+    kthLarge(root->lptr, k, result);
+}
+
+int main()
+{
+    NodeAVL *rootNode = nullptr;
+
+    int arrList[] = {30, 15, 45, 10, 20, 40, 50, 18};
+    int total = 8;
+
+    for (int i = 0; i < total; i++)
+        rootNode = addNode(rootNode, arrList[i]);
+
+    int ks = 3, kl = 2;
+    int smallAns = -1, largeAns = -1;
+
+    kthSmall(rootNode, ks, smallAns);
+    kthLarge(rootNode, kl, largeAns);
+
+    cout << "3rd Smallest Element: " << smallAns << endl;
+    cout << "2nd Largest Element: " << largeAns << endl;
+
+    cout << "Height of Left Subtree = " << heightNode(rootNode->lptr) << endl;
+    cout << "Height of Right Subtree = " << heightNode(rootNode->rptr) << endl;
+
+    return 0;
+}
