@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+
+struct Athlete
+{
+    string runnerName;
+    int timeTaken;
+};
+
+void combine(Athlete list[], int startL, int midL, int endL)
+{
+    Athlete *buffer = new Athlete[endL - startL + 1];
+    int p1 = startL, p2 = midL + 1;
+    int k = 0;
+
+    while (p1 <= midL && p2 <= endL)
+    {
+        if (list[p1].timeTaken <= list[p2].timeTaken)
+            buffer[k++] = list[p1++];
+        else
+            buffer[k++] = list[p2++];
+    }
+
+    while (p1 <= midL)
+        buffer[k++] = list[p1++];
+
+    while (p2 <= endL)
+        buffer[k++] = list[p2++];
+
+    for (int x = startL; x <= endL; x++)
+        list[x] = buffer[x - startL];
+
+    delete[] buffer;
+}
+
+void divideSort(Athlete list[], int lowI, int highI)
+{
+    if (lowI >= highI)
+        return;
+
+    int midI = lowI + (highI - lowI) / 2;
+
+    divideSort(list, lowI, midI);
+    divideSort(list, midI + 1, highI);
+
+    combine(list, lowI, midI, highI);
+}
+
+int main()
+{
+    const int totalEntries = 10;
+    Athlete participants[totalEntries];
+
+    for (int c = 0; c < totalEntries; c++)
+    {
+        cout << "Enter name and finish time for participant " << c + 1 << ": ";
+        cin >> participants[c].runnerName >> participants[c].timeTaken;
+    }
+
+    divideSort(participants, 0, totalEntries - 1);
+
+    cout << "\nTop 5 fastest participants:" << endl;
+    for (int z = 0; z < 5; z++)
+    {
+        cout << z + 1 << ". " << participants[z].runnerName 
+             << " - " << participants[z].timeTaken << " seconds" << endl;
+    }
+
+    return 0;
+}
