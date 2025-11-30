@@ -1,0 +1,116 @@
+#include <iostream>
+using namespace std;
+
+struct NodeUnit
+{
+    int dataKey;
+    NodeUnit *lftPtr;
+    NodeUnit *rgtPtr;
+    int lvlHeight;
+
+    NodeUnit(int d)
+    {
+        dataKey = d;
+        lftPtr = rgtPtr = nullptr;
+        lvlHeight = 1;
+    }
+};
+
+class BalancedTree
+{
+private:
+    NodeUnit *mainPtr;
+
+    int obtainHeight(NodeUnit *ptr)
+    {
+        return (ptr == nullptr) ? 0 : ptr->lvlHeight;
+    }
+
+    void updateHeight(NodeUnit *ptr)
+    {
+        int lh = obtainHeight(ptr->lftPtr);
+        int rh = obtainHeight(ptr->rgtPtr);
+        ptr->lvlHeight = 1 + (lh > rh ? lh : rh);
+    }
+
+    NodeUnit *leftRotate(NodeUnit *oldPtr)
+    {
+        NodeUnit *freshPtr = oldPtr->rgtPtr;
+        NodeUnit *midPtr = freshPtr->lftPtr;
+
+        freshPtr->lftPtr = oldPtr;
+        oldPtr->rgtPtr = midPtr;
+
+        updateHeight(oldPtr);
+        updateHeight(freshPtr);
+
+        return freshPtr;
+    }
+
+    NodeUnit *insertNode(NodeUnit *currPtr, int key)
+    {
+        if (currPtr == nullptr)
+            return new NodeUnit(key);
+
+        if (key < currPtr->dataKey)
+            currPtr->lftPtr = insertNode(currPtr->lftPtr, key);
+        else if (key > currPtr->dataKey)
+            currPtr->rgtPtr = insertNode(currPtr->rgtPtr, key);
+        else
+            return currPtr;
+
+        updateHeight(currPtr);
+        return currPtr;
+    }
+
+    void traverseInOrder(NodeUnit *ptr)
+    {
+        if (ptr == nullptr)
+            return;
+
+        traverseInOrder(ptr->lftPtr);
+        cout << ptr->dataKey << " ";
+        traverseInOrder(ptr->rgtPtr);
+    }
+
+public:
+    BalancedTree()
+    {
+        mainPtr = nullptr;
+    }
+
+    void addValue(int k)
+    {
+        mainPtr = insertNode(mainPtr, k);
+    }
+
+    void performLeftRotate()
+    {
+        mainPtr = leftRotate(mainPtr);
+    }
+
+    void displayTree()
+    {
+        traverseInOrder(mainPtr);
+        cout << endl;
+    }
+};
+
+int main()
+{
+    BalancedTree treeObj;
+    int arrVals[] = {50, 30, 70, 20, 40, 60, 80, 55};
+    int total = 8;
+
+    cout << "Inserting values into AVL-like Tree..." << endl;
+    for (int i = 0; i < total; i++)
+        treeObj.addValue(arrVals[i]);
+
+    cout << endl << "Applying left rotation on main node..." << endl;
+    treeObj.performLeftRotate();
+
+    cout << "Inorder Traversal After Rotation: ";
+    treeObj.displayTree();
+
+    return 0;
+}
