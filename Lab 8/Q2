@@ -1,0 +1,207 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+class UnitNode
+{
+public:
+    int unitTag;
+    string unitLabel;
+    int hitPoints;
+    int power;
+    UnitNode *leftLink;
+    UnitNode *rightLink;
+
+    UnitNode(int tag, string label, int hp, int pw)
+        : unitTag(tag), unitLabel(label), hitPoints(hp), power(pw), leftLink(nullptr), rightLink(nullptr) {}
+};
+
+class UnitTree
+{
+    UnitNode *treeBase;
+
+    UnitNode *fetchMin(UnitNode *cur)
+    {
+        while (cur && cur->leftLink)
+            cur = cur->leftLink;
+        return cur;
+    }
+
+    void traverseInOrder(UnitNode *cur)
+    {
+        if (!cur) return;
+        traverseInOrder(cur->leftLink);
+        cout << "\nID: " << cur->unitTag << ", Label: " << cur->unitLabel
+             << ", HP: " << cur->hitPoints << ", POW: " << cur->power;
+        traverseInOrder(cur->rightLink);
+    }
+
+    UnitNode *insertUnit(UnitNode *cur, int tag, string label, int hp, int pw)
+    {
+        if (!cur)
+            return new UnitNode(tag, label, hp, pw);
+
+        if (tag < cur->unitTag)
+            cur->leftLink = insertUnit(cur->leftLink, tag, label, hp, pw);
+        else if (tag > cur->unitTag)
+            cur->rightLink = insertUnit(cur->rightLink, tag, label, hp, pw);
+
+        return cur;
+    }
+
+    UnitNode *eraseUnit(UnitNode *cur, int tag)
+    {
+        if (!cur) return nullptr;
+
+        if (tag < cur->unitTag)
+            cur->leftLink = eraseUnit(cur->leftLink, tag);
+        else if (tag > cur->unitTag)
+            cur->rightLink = eraseUnit(cur->rightLink, tag);
+        else
+        {
+            if (!cur->leftLink)
+            {
+                UnitNode *temp = cur->rightLink;
+                delete cur;
+                return temp;
+            }
+            else if (!cur->rightLink)
+            {
+                UnitNode *temp = cur->leftLink;
+                delete cur;
+                return temp;
+            }
+            else
+            {
+                UnitNode *least = fetchMin(cur->rightLink);
+                cur->unitTag = least->unitTag;
+                cur->unitLabel = least->unitLabel;
+                cur->hitPoints = least->hitPoints;
+                cur->power = least->power;
+                cur->rightLink = eraseUnit(cur->rightLink, least->unitTag);
+            }
+        }
+        return cur;
+    }
+
+public:
+    UnitTree() : treeBase(nullptr) {}
+
+    void addUnit(int tag, string label, int hp, int pw)
+    {
+        treeBase = insertUnit(treeBase, tag, label, hp, pw);
+    }
+
+    void deleteUnit(int tag)
+    {
+        treeBase = eraseUnit(treeBase, tag);
+    }
+
+    UnitNode *getFrontUnit()
+    {
+        UnitNode *temp = treeBase;
+        if (!temp) return nullptr;
+        while (temp->leftLink)
+            temp = temp->leftLink;
+        return temp;
+    }
+
+    void showAll()
+    {
+        if (!treeBase)
+        {
+            cout << "\n(No Units Present)";
+            return;
+        }
+        traverseInOrder(treeBase);
+        cout << endl;
+    }
+
+    UnitNode *accessRoot()
+    {
+        return treeBase;
+    }
+};
+
+void executeRound(UnitTree &groupX, UnitTree &groupY, int stage)
+{
+    cout << "\n========================\n";
+    cout << "        PHASE " << stage << "\n";
+    cout << "========================\n";
+
+    cout << "\n--- GROUP X ---";
+    groupX.showAll();
+    cout << "\n--- GROUP Y ---";
+    groupY.showAll();
+    cout << endl;
+
+    UnitNode *x = groupX.getFrontUnit();
+    UnitNode *y = groupY.getFrontUnit();
+
+    if (!x || !y) return;
+
+    cout << "\nGroup X Vanguard: " << x->unitLabel << " (HP: " << x->hitPoints << ")";
+    cout << "\nGroup Y Vanguard: " << y->unitLabel << " (HP: " << y->hitPoints << ")\n";
+
+    int shotX = x->power + (rand() % 5);
+    y->hitPoints -= shotX;
+    cout << "Group X " << x->unitLabel << " hits " << y->unitLabel
+         << " for " << shotX << " damage!\n";
+
+    if (y->hitPoints <= 0)
+    {
+        cout << "Group Y " << y->unitLabel << " collapses!\n";
+        groupY.deleteUnit(y->unitTag);
+        return;
+    }
+
+    int shotY = y->power + (rand() % 5);
+    x->hitPoints -= shotY;
+    cout << "Group Y " << y->unitLabel << " retaliates for " << shotY << " damage!\n";
+
+    if (x->hitPoints <= 0)
+    {
+        cout << "Group X " << x->unitLabel << " falls!\n";
+        groupX.deleteUnit(x->unitTag);
+    }
+}
+
+void conductBattle(UnitTree &groupX, UnitTree &groupY)
+{
+    int phaseNum = 1;
+    while (groupX.accessRoot() && groupY.accessRoot())
+    {
+        executeRound(groupX, groupY, phaseNum);
+        phaseNum++;
+    }
+
+    if (!groupY.accessRoot())
+        cout << "\nGROUP X CLAIMS VICTORY!\n";
+    else
+        cout << "\nGROUP Y CLAIMS VICTORY!\n";
+}
+
+int main()
+{
+    srand(time(NULL));
+
+    UnitTree groupX, groupY;
+
+    groupX.addUnit(10, "Blademaster", 45, 8);
+    groupX.addUnit(5, "Sharpshooter", 30, 7);
+    groupX.addUnit(15, "Spellbinder", 25, 10);
+    groupX.addUnit(3, "Protector", 50, 6);
+    groupX.addUnit(8, "Shadow", 28, 9);
+
+    groupY.addUnit(12, "Giant", 22, 5);
+    groupY.addUnit(6, "Rager", 35, 8);
+    groupY.addUnit(18, "Wraithcaller", 30, 9);
+    groupY.addUnit(1, "Ghoul", 20, 4);
+    groupY.addUnit(9, "Titan", 55, 7);
+
+    cout << "\n==== WAR COMMENCES ====\n";
+    conductBattle(groupX, groupY);
+
+    return 0;
+}
