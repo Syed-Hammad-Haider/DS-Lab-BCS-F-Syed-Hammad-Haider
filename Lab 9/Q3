@@ -1,0 +1,142 @@
+#include <iostream>
+using namespace std;
+
+struct NodeAVL
+{
+    int dataKey;
+    int hLevel;
+    NodeAVL *lChild;
+    NodeAVL *rChild;
+
+    NodeAVL(int d)
+    {
+        dataKey = d;
+        hLevel = 1;
+        lChild = rChild = nullptr;
+    }
+};
+
+int heightOf(NodeAVL *ptr)
+{
+    return (ptr == nullptr ? 0 : ptr->hLevel);
+}
+
+int balanceVal(NodeAVL *ptr)
+{
+    if (ptr == nullptr)
+        return 0;
+    return heightOf(ptr->lChild) - heightOf(ptr->rChild);
+}
+
+void updateHeight(NodeAVL *ptr)
+{
+    int LH = heightOf(ptr->lChild);
+    int RH = heightOf(ptr->rChild);
+    ptr->hLevel = 1 + (LH > RH ? LH : RH);
+}
+
+NodeAVL *rightRotate(NodeAVL *nodeA)
+{
+    NodeAVL *nodeB = nodeA->lChild;
+    NodeAVL *temp = nodeB->rChild;
+
+    nodeB->rChild = nodeA;
+    nodeA->lChild = temp;
+
+    updateHeight(nodeA);
+    updateHeight(nodeB);
+
+    return nodeB;
+}
+
+NodeAVL *leftRotate(NodeAVL *nodeA)
+{
+    NodeAVL *nodeB = nodeA->rChild;
+    NodeAVL *temp = nodeB->lChild;
+
+    nodeB->lChild = nodeA;
+    nodeA->rChild = temp;
+
+    updateHeight(nodeA);
+    updateHeight(nodeB);
+
+    return nodeB;
+}
+
+NodeAVL *insertItem(NodeAVL *node, int val)
+{
+    if (node == nullptr)
+        return new NodeAVL(val);
+
+    if (val < node->dataKey)
+        node->lChild = insertItem(node->lChild, val);
+    else if (val > node->dataKey)
+        node->rChild = insertItem(node->rChild, val);
+    else
+        return node;
+
+    updateHeight(node);
+
+    int bf = balanceVal(node);
+
+    if (bf > 1 && val < node->lChild->dataKey)
+        return rightRotate(node);
+
+    if (bf < -1 && val > node->rChild->dataKey)
+        return leftRotate(node);
+
+    if (bf > 1 && val > node->lChild->dataKey)
+    {
+        node->lChild = leftRotate(node->lChild);
+        return rightRotate(node);
+    }
+
+    if (bf < -1 && val < node->rChild->dataKey)
+    {
+        node->rChild = rightRotate(node->rChild);
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+void inorderPrint(NodeAVL *root)
+{
+    if (!root)
+        return;
+    inorderPrint(root->lChild);
+    cout << root->dataKey << " ";
+    inorderPrint(root->rChild);
+}
+
+void displayBalance(NodeAVL *root)
+{
+    if (!root)
+        return;
+    displayBalance(root->lChild);
+    cout << "Node " << root->dataKey << " BF = " << balanceVal(root) << endl;
+    displayBalance(root->rChild);
+}
+
+int main()
+{
+    NodeAVL *rootNode = nullptr;
+
+    int elements[] = {40, 20, 10, 25, 50, 45, 60, 55};
+    int count = 8;
+
+    cout << "Inserting values into AVL tree:" << endl;
+    for (int i = 0; i < count; i++)
+        rootNode = insertItem(rootNode, elements[i]);
+
+    cout << endl << "Balance Factor of Each Node:" << endl;
+    displayBalance(rootNode);
+
+    cout << endl << "Height of Final Tree: " << heightOf(rootNode) << endl;
+
+    cout << endl << "Inorder Traversal of AVL Tree: ";
+    inorderPrint(rootNode);
+    cout << endl;
+
+    return 0;
+}
