@@ -1,0 +1,125 @@
+#include <iostream>
+#include <climits>
+using namespace std;
+
+class Node
+{
+public:
+    int key;
+    Node *leftPtr;
+    Node *rightPtr;
+
+    Node(int k) : key(k), leftPtr(nullptr), rightPtr(nullptr) {}
+};
+
+class BST
+{
+    Node *rootPtr;
+
+    Node *addNode(Node *currPtr, int k)
+    {
+        if (currPtr == nullptr)
+            return new Node(k);
+
+        if (k < currPtr->key)
+            currPtr->leftPtr = addNode(currPtr->leftPtr, k);
+        else if (k > currPtr->key)
+            currPtr->rightPtr = addNode(currPtr->rightPtr, k);
+
+        return currPtr;
+    }
+
+    bool checkValid(Node *currPtr, Node *minPtr, Node *maxPtr)
+    {
+        if (currPtr == nullptr)
+            return true;
+
+        if (minPtr && currPtr->key <= minPtr->key)
+            return false;
+
+        if (maxPtr && currPtr->key >= maxPtr->key)
+            return false;
+
+        return checkValid(currPtr->leftPtr, minPtr, currPtr) &&
+               checkValid(currPtr->rightPtr, currPtr, maxPtr);
+    }
+
+    void printIn(Node *currPtr)
+    {
+        if (!currPtr)
+            return;
+        printIn(currPtr->leftPtr);
+        cout << currPtr->key << " ";
+        printIn(currPtr->rightPtr);
+    }
+
+public:
+    BST() : rootPtr(nullptr) {}
+
+    void loadFromArray(int arr[], int len)
+    {
+        rootPtr = nullptr;
+        for (int i = 0; i < len; i++)
+            rootPtr = addNode(rootPtr, arr[i]);
+    }
+
+    bool validate()
+    {
+        return checkValid(rootPtr, nullptr, nullptr);
+    }
+
+    void inorderPrint()
+    {
+        printIn(rootPtr);
+        cout << endl;
+    }
+
+    void assignRoot(Node *ptr)
+    {
+        rootPtr = ptr;
+    }
+
+    Node *fetchRoot()
+    {
+        return rootPtr;
+    }
+};
+
+int main()
+{
+    int nums1[] = {12, 7, 25, 3, 9};
+    int count1 = 5;
+
+    BST obj1;
+    obj1.loadFromArray(nums1, count1);
+
+    cout << "Example 1 - Inorder Traversal: ";
+    obj1.inorderPrint();
+
+    if (obj1.validate())
+        cout << "Status: Valid BST\n\n";
+    else
+        cout << "Status: NOT a Valid BST\n\n";
+
+    Node *X = new Node(30);
+    Node *Y = new Node(10);
+    Node *Z = new Node(40);
+    Node *W = new Node(50);
+
+    X->leftPtr = Y;
+    X->rightPtr = Z;
+    Y->leftPtr = W;
+
+    BST obj2;
+    obj2.assignRoot(X);
+
+    cout << "Example 2 - Inorder Traversal: ";
+    obj2.inorderPrint();
+
+    if (obj2.validate())
+        cout << "Status: Valid BST\n";
+    else
+        cout << "Status: NOT a Valid BST\n";
+
+    return 0;
+}
